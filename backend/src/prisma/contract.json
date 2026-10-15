@@ -4,11 +4,11 @@
   "target": "postgres",
   "profileHash": "3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2",
   "roots": {
-    "Post": {
-      "model": "Post",
+    "rides": {
+      "model": "Ride",
       "namespace": "public"
     },
-    "User": {
+    "users": {
       "model": "User",
       "namespace": "public"
     }
@@ -16,28 +16,70 @@
   "domain": {
     "namespaces": {
       "public": {
-        "models": {
-          "Post": {
-            "fields": {
-              "authorId": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/int4@1",
-                  "kind": "scalar"
-                }
+        "enum": {
+          "Status": {
+            "codecId": "pg/text@1",
+            "members": [
+              {
+                "name": "OPEN",
+                "value": "OPEN"
               },
-              "content": {
+              {
+                "name": "ACCEPTED",
+                "value": "ACCEPTED"
+              }
+            ]
+          }
+        },
+        "models": {
+          "Ride": {
+            "fields": {
+              "acceptorId": {
                 "nullable": true,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/int4@1",
                   "kind": "scalar"
                 }
               },
               "createdAt": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/timestamptz-string@1",
+                  "codecId": "pg/timestamp-temporal@1",
                   "kind": "scalar"
+                }
+              },
+              "departure": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamp-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "departureLocation": {
+                "nullable": false,
+                "type": {
+                  "codecId": "sql/varchar@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "length": 255
+                  }
+                }
+              },
+              "description": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "destinationLocation": {
+                "nullable": false,
+                "type": {
+                  "codecId": "sql/varchar@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "length": 255
+                  }
                 }
               },
               "id": {
@@ -47,11 +89,45 @@
                   "kind": "scalar"
                 }
               },
-              "title": {
+              "posterId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "price": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/numeric@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 10,
+                    "scale": 2
+                  }
+                }
+              },
+              "status": {
                 "nullable": false,
                 "type": {
                   "codecId": "pg/text@1",
                   "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "Status",
+                  "namespaceId": "public",
+                  "plane": "domain"
+                }
+              },
+              "title": {
+                "nullable": false,
+                "type": {
+                  "codecId": "sql/varchar@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "length": 50
+                  }
                 }
               },
               "updatedAt": {
@@ -63,12 +139,28 @@
               }
             },
             "relations": {
-              "author": {
+              "acceptor": {
+                "cardinality": "N:1",
+                "nullable": true,
+                "on": {
+                  "localFields": [
+                    "acceptorId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "User",
+                  "namespace": "public"
+                }
+              },
+              "poster": {
                 "cardinality": "N:1",
                 "nullable": false,
                 "on": {
                   "localFields": [
-                    "authorId"
+                    "posterId"
                   ],
                   "targetFields": [
                     "id"
@@ -82,17 +174,35 @@
             },
             "storage": {
               "fields": {
-                "authorId": {
-                  "column": "authorId"
-                },
-                "content": {
-                  "column": "content"
+                "acceptorId": {
+                  "column": "acceptorId"
                 },
                 "createdAt": {
                   "column": "createdAt"
                 },
+                "departure": {
+                  "column": "departure"
+                },
+                "departureLocation": {
+                  "column": "departureLocation"
+                },
+                "description": {
+                  "column": "description"
+                },
+                "destinationLocation": {
+                  "column": "destinationLocation"
+                },
                 "id": {
                   "column": "id"
+                },
+                "posterId": {
+                  "column": "posterId"
+                },
+                "price": {
+                  "column": "price"
+                },
+                "status": {
+                  "column": "status"
                 },
                 "title": {
                   "column": "title"
@@ -102,23 +212,19 @@
                 }
               },
               "namespaceId": "public",
-              "table": "Post"
+              "table": "rides"
             }
           },
           "User": {
             "fields": {
-              "createdAt": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/timestamptz-string@1",
-                  "kind": "scalar"
-                }
-              },
               "email": {
-                "nullable": false,
+                "nullable": true,
                 "type": {
-                  "codecId": "pg/text@1",
-                  "kind": "scalar"
+                  "codecId": "sql/varchar@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "length": 255
+                  }
                 }
               },
               "id": {
@@ -128,21 +234,7 @@
                   "kind": "scalar"
                 }
               },
-              "name": {
-                "nullable": true,
-                "type": {
-                  "codecId": "pg/text@1",
-                  "kind": "scalar"
-                }
-              },
-              "updatedAt": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/timestamptz-string@1",
-                  "kind": "scalar"
-                }
-              },
-              "username": {
+              "passwordHash": {
                 "nullable": true,
                 "type": {
                   "codecId": "pg/text@1",
@@ -151,45 +243,51 @@
               }
             },
             "relations": {
-              "posts": {
+              "acceptedRides": {
                 "cardinality": "1:N",
                 "on": {
                   "localFields": [
                     "id"
                   ],
                   "targetFields": [
-                    "authorId"
+                    "acceptorId"
                   ]
                 },
                 "to": {
-                  "model": "Post",
+                  "model": "Ride",
+                  "namespace": "public"
+                }
+              },
+              "postedRides": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "posterId"
+                  ]
+                },
+                "to": {
+                  "model": "Ride",
                   "namespace": "public"
                 }
               }
             },
             "storage": {
               "fields": {
-                "createdAt": {
-                  "column": "createdAt"
-                },
                 "email": {
                   "column": "email"
                 },
                 "id": {
                   "column": "id"
                 },
-                "name": {
-                  "column": "name"
-                },
-                "updatedAt": {
-                  "column": "updatedAt"
-                },
-                "username": {
-                  "column": "username"
+                "passwordHash": {
+                  "column": "passwordHash"
                 }
               },
               "namespaceId": "public",
-              "table": "User"
+              "table": "users"
             }
           }
         }
@@ -201,26 +299,54 @@
       "public": {
         "entries": {
           "table": {
-            "Post": {
+            "rides": {
+              "checks": [
+                {
+                  "expression": "\"status\" IN ('OPEN', 'ACCEPTED')",
+                  "name": "rides_status_check_270848c8",
+                  "prefix": "rides_status_check"
+                }
+              ],
               "columns": {
-                "authorId": {
+                "acceptorId": {
                   "codecId": "pg/int4@1",
                   "dataType": "pg/int4",
-                  "nullable": false
-                },
-                "content": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
                   "nullable": true
                 },
                 "createdAt": {
-                  "codecId": "pg/timestamptz-string@1",
-                  "dataType": "pg/timestamptz",
+                  "codecId": "pg/timestamp-temporal@1",
+                  "dataType": "pg/timestamp",
                   "default": {
                     "expression": "now()",
                     "kind": "function"
                   },
                   "nullable": false
+                },
+                "departure": {
+                  "codecId": "pg/timestamp-temporal@1",
+                  "dataType": "pg/timestamp",
+                  "nullable": false
+                },
+                "departureLocation": {
+                  "codecId": "sql/varchar@1",
+                  "dataType": "pg/varchar",
+                  "nullable": false,
+                  "typeParams": {
+                    "length": 255
+                  }
+                },
+                "description": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "destinationLocation": {
+                  "codecId": "sql/varchar@1",
+                  "dataType": "pg/varchar",
+                  "nullable": false,
+                  "typeParams": {
+                    "length": 255
+                  }
                 },
                 "id": {
                   "codecId": "pg/int4@1",
@@ -231,10 +357,42 @@
                   },
                   "nullable": false
                 },
-                "title": {
+                "posterId": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "nullable": false
+                },
+                "price": {
+                  "codecId": "pg/numeric@1",
+                  "dataType": "pg/numeric",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 10,
+                    "scale": 2
+                  }
+                },
+                "status": {
                   "codecId": "pg/text@1",
                   "dataType": "pg/text",
-                  "nullable": false
+                  "default": {
+                    "kind": "literal",
+                    "value": "OPEN"
+                  },
+                  "nullable": false,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "Status",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                },
+                "title": {
+                  "codecId": "sql/varchar@1",
+                  "dataType": "pg/varchar",
+                  "nullable": false,
+                  "typeParams": {
+                    "length": 50
+                  }
                 },
                 "updatedAt": {
                   "codecId": "pg/timestamptz-string@1",
@@ -245,31 +403,58 @@
               "foreignKeys": [
                 {
                   "index": {
-                    "name": "Post_authorId_idx_e47547ed"
+                    "name": "rides_posterId_idx_981844b1"
                   },
                   "source": {
                     "columns": [
-                      "authorId"
+                      "posterId"
                     ],
                     "namespaceId": "public",
-                    "tableName": "Post"
+                    "tableName": "rides"
                   },
                   "target": {
                     "columns": [
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "User"
+                    "tableName": "users"
+                  }
+                },
+                {
+                  "index": {
+                    "name": "rides_acceptorId_idx_336f5317"
+                  },
+                  "source": {
+                    "columns": [
+                      "acceptorId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "rides"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "users"
                   }
                 }
               ],
               "indexes": [
                 {
                   "columns": [
-                    "authorId"
+                    "acceptorId"
                   ],
-                  "name": "Post_authorId_idx_e47547ed",
-                  "prefix": "Post_authorId_idx",
+                  "name": "rides_acceptorId_idx_336f5317",
+                  "prefix": "rides_acceptorId_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "posterId"
+                  ],
+                  "name": "rides_posterId_idx_981844b1",
+                  "prefix": "rides_posterId_idx",
                   "unique": false
                 }
               ],
@@ -280,21 +465,15 @@
               },
               "uniques": []
             },
-            "User": {
+            "users": {
               "columns": {
-                "createdAt": {
-                  "codecId": "pg/timestamptz-string@1",
-                  "dataType": "pg/timestamptz",
-                  "default": {
-                    "expression": "now()",
-                    "kind": "function"
-                  },
-                  "nullable": false
-                },
                 "email": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
-                  "nullable": false
+                  "codecId": "sql/varchar@1",
+                  "dataType": "pg/varchar",
+                  "nullable": true,
+                  "typeParams": {
+                    "length": 255
+                  }
                 },
                 "id": {
                   "codecId": "pg/int4@1",
@@ -305,17 +484,7 @@
                   },
                   "nullable": false
                 },
-                "name": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
-                  "nullable": true
-                },
-                "updatedAt": {
-                  "codecId": "pg/timestamptz-string@1",
-                  "dataType": "pg/timestamptz",
-                  "nullable": false
-                },
-                "username": {
+                "passwordHash": {
                   "codecId": "pg/text@1",
                   "dataType": "pg/text",
                   "nullable": true
@@ -336,16 +505,25 @@
                 }
               ]
             }
+          },
+          "valueSet": {
+            "Status": {
+              "kind": "valueSet",
+              "values": [
+                "OPEN",
+                "ACCEPTED"
+              ]
+            }
           }
         },
         "id": "public",
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "a51b4833fdaffe730572670ccc27dd89af7e0726ab3de7f428d21702d687cc15"
+    "storageHash": "65883bd27a64c9c0c971c0fe10c299e68413b155f9a2ea2ca8e0ff2163d60f8a"
   },
   "execution": {
-    "executionHash": "4e88564095b5e0ba7904ffdba3c563ef916d87688c8c483c67055f71a9194f0f",
+    "executionHash": "8cd5898e020d4d5475142a0a5a857197bd21789683b554a7e38f1545f40b2ba1",
     "mutations": {
       "defaults": [
         {
@@ -358,22 +536,7 @@
             "kind": "generator"
           },
           "ref": {
-            "entry": "Post",
-            "field": "updatedAt",
-            "namespace": "public"
-          }
-        },
-        {
-          "onCreate": {
-            "id": "timestampNow",
-            "kind": "generator"
-          },
-          "onUpdate": {
-            "id": "timestampNow",
-            "kind": "generator"
-          },
-          "ref": {
-            "entry": "User",
+            "entry": "rides",
             "field": "updatedAt",
             "namespace": "public"
           }

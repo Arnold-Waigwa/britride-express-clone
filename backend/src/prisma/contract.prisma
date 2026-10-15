@@ -1,21 +1,34 @@
 // use prisma-8
-
-model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  username  String?
-  name      String?
-  posts     Post[]
-  createdAt TimestamptzString @default(now())
-  updatedAt temporal.updatedAtString()
+enum Status {
+  OPEN
+  ACCEPTED
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String?
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int
-  createdAt TimestamptzString @default(now())
+model User {
+  id Int @id @default(autoincrement())
+  email VarChar(255)? @unique
+  passwordHash String?
+  postedRides Ride[] @relation("postedRides")
+  acceptedRides Ride[] @relation("acceptedRides")
+
+  @@map("users")
+}
+
+model Ride {
+  id Int @id @default(autoincrement())
+  title VarChar(50)
+  departureLocation VarChar(255)
+  destinationLocation VarChar(255)
+  departure Timestamp 
+  description String
+  price Numeric(10, 2)
+  status Status @default(OPEN)
+  createdAt Timestamp @default(now())
   updatedAt temporal.updatedAtString()
+  posterId Int
+  acceptorId Int?
+  poster User @relation("postedRides", fields: [posterId], references: [id])
+  acceptor User? @relation("acceptedRides", fields: [acceptorId], references: [id])
+
+  @@map("rides")
 }
