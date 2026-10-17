@@ -227,11 +227,31 @@
                   }
                 }
               },
+              "firstName": {
+                "nullable": true,
+                "type": {
+                  "codecId": "sql/varchar@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "length": 50
+                  }
+                }
+              },
               "id": {
                 "nullable": false,
                 "type": {
                   "codecId": "pg/int4@1",
                   "kind": "scalar"
+                }
+              },
+              "lastName": {
+                "nullable": true,
+                "type": {
+                  "codecId": "sql/varchar@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "length": 50
+                  }
                 }
               },
               "passwordHash": {
@@ -279,8 +299,14 @@
                 "email": {
                   "column": "email"
                 },
+                "firstName": {
+                  "column": "firstName"
+                },
                 "id": {
                   "column": "id"
+                },
+                "lastName": {
+                  "column": "lastName"
                 },
                 "passwordHash": {
                   "column": "passwordHash"
@@ -475,6 +501,14 @@
                     "length": 255
                   }
                 },
+                "firstName": {
+                  "codecId": "sql/varchar@1",
+                  "dataType": "pg/varchar",
+                  "nullable": true,
+                  "typeParams": {
+                    "length": 50
+                  }
+                },
                 "id": {
                   "codecId": "pg/int4@1",
                   "dataType": "pg/int4",
@@ -483,6 +517,14 @@
                     "kind": "function"
                   },
                   "nullable": false
+                },
+                "lastName": {
+                  "codecId": "sql/varchar@1",
+                  "dataType": "pg/varchar",
+                  "nullable": true,
+                  "typeParams": {
+                    "length": 50
+                  }
                 },
                 "passwordHash": {
                   "codecId": "pg/text@1",
@@ -520,7 +562,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "65883bd27a64c9c0c971c0fe10c299e68413b155f9a2ea2ca8e0ff2163d60f8a"
+    "storageHash": "15acd8d0c53876c3b8c8a39db5d8507cf06630ceb3e891664bd81a58410a6194"
   },
   "execution": {
     "executionHash": "8cd5898e020d4d5475142a0a5a857197bd21789683b554a7e38f1545f40b2ba1",

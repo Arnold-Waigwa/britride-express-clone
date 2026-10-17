@@ -22,7 +22,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'65883bd27a64c9c0c971c0fe10c299e68413b155f9a2ea2ca8e0ff2163d60f8a'>;
+  StorageHashBase<'15acd8d0c53876c3b8c8a39db5d8507cf06630ceb3e891664bd81a58410a6194'>;
 export type ExecutionHash =
   ExecutionHashBase<'8cd5898e020d4d5475142a0a5a857197bd21789683b554a7e38f1545f40b2ba1'>;
 export type ProfileHash =
@@ -254,7 +254,9 @@ export type FieldOutputTypes = {
     };
     readonly User: {
       readonly email: Varchar<255> | null;
+      readonly firstName: Varchar<50> | null;
       readonly id: CodecTypes['pg/int4@1']['output'];
+      readonly lastName: Varchar<50> | null;
       readonly passwordHash: CodecTypes['pg/text@1']['output'] | null;
     };
   };
@@ -277,7 +279,9 @@ export type FieldInputTypes = {
     };
     readonly User: {
       readonly email: CodecTypes['sql/varchar@1']['input'] | null;
+      readonly firstName: CodecTypes['sql/varchar@1']['input'] | null;
       readonly id: CodecTypes['pg/int4@1']['input'];
+      readonly lastName: CodecTypes['sql/varchar@1']['input'] | null;
       readonly passwordHash: CodecTypes['pg/text@1']['input'] | null;
     };
   };
@@ -300,7 +304,9 @@ export type StorageColumnTypes = {
     };
     readonly users: {
       readonly email: Varchar<255> | null;
+      readonly firstName: Varchar<50> | null;
       readonly id: CodecTypes['pg/int4@1']['output'];
+      readonly lastName: Varchar<50> | null;
       readonly passwordHash: CodecTypes['pg/text@1']['output'] | null;
     };
   };
@@ -323,7 +329,9 @@ export type StorageColumnInputTypes = {
     };
     readonly users: {
       readonly email: CodecTypes['sql/varchar@1']['input'] | null;
+      readonly firstName: CodecTypes['sql/varchar@1']['input'] | null;
       readonly id: CodecTypes['pg/int4@1']['input'];
+      readonly lastName: CodecTypes['sql/varchar@1']['input'] | null;
       readonly passwordHash: CodecTypes['pg/text@1']['input'] | null;
     };
   };
@@ -349,7 +357,9 @@ export namespace Models {
   };
   export type public_User = {
     email: Varchar<255> | null;
+    firstName: Varchar<50> | null;
     id: CodecTypes['pg/int4@1']['output'];
+    lastName: Varchar<50> | null;
     passwordHash: CodecTypes['pg/text@1']['output'] | null;
     acceptedRides: public_Ride[];
     postedRides: public_Ride[];
@@ -522,6 +532,13 @@ type ContractBase = Omit<
                   readonly typeParams: { readonly length: 255 };
                   readonly many: false;
                 };
+                readonly firstName: {
+                  readonly dataType: 'pg/varchar';
+                  readonly codecId: 'sql/varchar@1';
+                  readonly nullable: true;
+                  readonly typeParams: { readonly length: 50 };
+                  readonly many: false;
+                };
                 readonly id: {
                   readonly dataType: 'pg/int4';
                   readonly codecId: 'pg/int4@1';
@@ -530,6 +547,13 @@ type ContractBase = Omit<
                     readonly kind: 'function';
                     readonly expression: 'autoincrement()';
                   };
+                  readonly many: false;
+                };
+                readonly lastName: {
+                  readonly dataType: 'pg/varchar';
+                  readonly codecId: 'sql/varchar@1';
+                  readonly nullable: true;
+                  readonly typeParams: { readonly length: 50 };
                   readonly many: false;
                 };
                 readonly passwordHash: {
@@ -693,9 +717,25 @@ type ContractBase = Omit<
                   readonly typeParams: { readonly length: 255 };
                 };
               };
+              readonly firstName: {
+                readonly nullable: true;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'sql/varchar@1';
+                  readonly typeParams: { readonly length: 50 };
+                };
+              };
               readonly id: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly lastName: {
+                readonly nullable: true;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'sql/varchar@1';
+                  readonly typeParams: { readonly length: 50 };
+                };
               };
               readonly passwordHash: {
                 readonly nullable: true;
@@ -725,7 +765,9 @@ type ContractBase = Omit<
               readonly namespaceId: 'public';
               readonly fields: {
                 readonly email: { readonly column: 'email' };
+                readonly firstName: { readonly column: 'firstName' };
                 readonly id: { readonly column: 'id' };
+                readonly lastName: { readonly column: 'lastName' };
                 readonly passwordHash: { readonly column: 'passwordHash' };
               };
             };

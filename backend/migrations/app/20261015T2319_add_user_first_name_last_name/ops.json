@@ -1,0 +1,86 @@
+[
+  {
+    "id": "column.public.users.firstName",
+    "label": "Add column \"firstName\" to \"users\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "firstName",
+        "table": "users"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"firstName\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "users",
+          "firstName"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"firstName\"",
+        "sql": "ALTER TABLE \"public\".\"users\" ADD COLUMN \"firstName\" character varying(50)"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"firstName\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "users",
+          "firstName"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.users.lastName",
+    "label": "Add column \"lastName\" to \"users\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "lastName",
+        "table": "users"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"lastName\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "users",
+          "lastName"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"lastName\"",
+        "sql": "ALTER TABLE \"public\".\"users\" ADD COLUMN \"lastName\" character varying(50)"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"lastName\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "users",
+          "lastName"
+        ]
+      }
+    ]
+  }
+]
