@@ -1,7 +1,7 @@
 import express from "express";
 import ridesRouter from "./api/routes/rides";
 import registerRouter from "./api/auth/register";
-import signInRouter from "./api/auth/register";
+import signInRouter from "./api/auth/sign-in";
 
 const app = express();
 app.use(express.json());

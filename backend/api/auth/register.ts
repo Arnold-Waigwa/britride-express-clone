@@ -1,7 +1,7 @@
 import express from "express";
 import { registerUserSchema } from "../../schema";
 import { db } from "../../src/prisma/db";
-import * as jose from "jose";
+import { generateJWT } from "../../utils";
 
 const router = express.Router();
 
@@ -30,17 +30,12 @@ router.post("/", async (req, res) => {
       passwordHash: hashedPassword,
     });
 
-    const secret = new TextEncoder().encode(Bun.env.JWT_SECRET);
-
-    const token = await new jose.SignJWT({
+    const token = await generateJWT({
       email,
       firstName,
       lastName,
       id: user.id,
-    })
-      .setProtectedHeader({ alg: "HS256" })
-      .setExpirationTime("1d")
-      .sign(secret);
+    });
 
     res.status(201).send({ token });
   } catch (error) {

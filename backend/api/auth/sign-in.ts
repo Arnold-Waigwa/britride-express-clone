@@ -6,7 +6,7 @@
 import express from "express";
 import { signInUserSchema } from "../../schema";
 import { db } from "../../src/prisma/db";
-import * as jose from "jose";
+import { generateJWT } from "../../utils";
 
 const router = express.Router();
 
@@ -34,18 +34,13 @@ router.post("/", async (req, res) => {
       return res.status(401).json({ error: "Invalid email or password" });
     }
 
-    const secret = new TextEncoder().encode(Bun.env.JWT_SECRET);
-
     //username and password are valid, issue token
-    const token = await new jose.SignJWT({
-      email,
+    const token = await generateJWT({
       firstName: user.first_name,
       lastName: user.last_name,
       id: user.id,
-    })
-      .setProtectedHeader({ alg: "HS256" })
-      .setExpirationTime("1d")
-      .sign(secret);
+      email,
+    });
 
     res.send({ token });
   } catch (error) {
