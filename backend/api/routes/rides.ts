@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { inputRideSchema } from "../../schema";
 import { db } from "../../src/prisma/db";
+import requireAuth from "../../middleware/authentication";
 
 const router = Router();
 
@@ -14,7 +15,7 @@ router.get("/", async (_req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", requireAuth, async (req, res) => {
   const validated = inputRideSchema.safeParse(req.body);
 
   if (!validated.success) {
@@ -22,10 +23,12 @@ router.post("/", async (req, res) => {
     return;
   }
 
+  const userId = res.locals.user.id;
+
   try {
     const createdRide = await db.orm.public.Ride.create({
       ...validated.data,
-      posterId: 2,
+      posterId: userId,
     });
 
     res.status(201).json(createdRide);
@@ -59,11 +62,13 @@ router.get("/:rideId", async (req, res) => {
 });
 
 //send request with default current values to reuse inputRideSchema
-router.put("/:rideId", async (req, res) => {
+router.put("/:rideId", requireAuth, async (req, res) => {
   const rideId = Number(req.params.rideId);
 
   if (!Number.isInteger(rideId) || rideId < 1 || rideId > 2147483647)
     return res.status(400).send({ error: "Invalid ride Id" });
+
+  const userId = res.locals.user.id;
 
   try {
     const validated = inputRideSchema.safeParse(req.body);
@@ -73,6 +78,9 @@ router.put("/:rideId", async (req, res) => {
 
     const ride = await db.orm.public.Ride.first({ id: rideId });
     if (!ride) return res.status(404).send({ error: "ride not found" });
+
+    if (ride.posterId !== userId)
+      return res.status(403).send("Cannot update a ride you did not post");
 
     const updatedRide = await db.orm.public.Ride.where({ id: rideId }).update(
       validated.data,
@@ -85,15 +93,14 @@ router.put("/:rideId", async (req, res) => {
   }
 });
 
-router.post("/:rideId/accept", async (req, res) => {
+router.post("/:rideId/accept", requireAuth, async (req, res) => {
   const rideId = Number(req.params.rideId);
 
   if (!Number.isInteger(rideId) || rideId < 1 || rideId > 2147483647) {
     return res.status(400).json({ error: "Invalid ride ID" });
   }
 
-  // Temporary until sign-in is implemented.
-  const userId = 2;
+  const userId = res.locals.user.id;
 
   try {
     const ride = await db.orm.public.Ride.first({ id: rideId });
@@ -127,21 +134,25 @@ router.post("/:rideId/accept", async (req, res) => {
   }
 });
 
-router.delete("/:rideId", async (req, res) => {
+router.delete("/:rideId", requireAuth, async (req, res) => {
   const rideId = Number(req.params.rideId);
 
   if (!Number.isInteger(rideId) || rideId < 1 || rideId > 2147483647) {
     return res.status(400).json({ error: "Invalid ride ID" });
   }
 
+  const userId = res.locals.user.id;
+
   try {
-    const deletedRide = await db.orm.public.Ride.where({
+    const ride = await db.orm.public.Ride.first({ id: rideId });
+    if (!ride) return res.status(404).send({ error: "ride not found" });
+
+    if (ride.posterId !== userId)
+      return res.status(403).send("Cannot delete a ride you did not post");
+
+    await db.orm.public.Ride.where({
       id: rideId,
     }).delete();
-
-    if (!deletedRide) {
-      return res.status(404).json({ error: "Ride not found" });
-    }
 
     return res.status(204).send();
   } catch (error) {
