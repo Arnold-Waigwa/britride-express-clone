@@ -67,6 +67,22 @@ export const registerUserSchema = z.object({
   password: z.string().min(12).max(255),
 });
 
+export const signInUserSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .max(255)
+    .pipe(z.email())
+    .refine((value) => value.endsWith("@albion.edu"), {
+      message: "Use your Albion email address",
+    })
+    .transform((value) => value as Varchar<255>),
+  password: z.string().min(1).max(255),
+});
+
+export type userSignInType = z.infer<typeof signInUserSchema>;
+
 export type userRegisterType = z.infer<typeof registerUserSchema>;
 
 export type rideInputType = z.infer<typeof inputRideSchema>;

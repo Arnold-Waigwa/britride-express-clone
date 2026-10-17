@@ -1,8 +1,3 @@
-//flow: receive {firstName, lastName, email, password}
-//verify input using schema
-//use bcrypt of bun to hash password and set hashedpassword to that
-//create new record: firstname, lastname, email, password
-//generate jwt using secret, and send as response
 import express from "express";
 import { registerUserSchema } from "../../schema";
 import { db } from "../../src/prisma/db";
