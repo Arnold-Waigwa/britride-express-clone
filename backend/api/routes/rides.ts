@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { inputRideSchema } from "../schema";
-import { db } from "../src/prisma/db";
+import { inputRideSchema } from "../../schema";
+import { db } from "../../src/prisma/db";
 
 const router = Router();
 

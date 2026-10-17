@@ -6,8 +6,8 @@ enum Status {
 
 model User {
   id Int @id @default(autoincrement())
-  firstName VarChar(50)?
-  lastName VarChar(50)?
+  first_name VarChar(50)?
+  last_name VarChar(50)?
   email VarChar(255)? @unique
   passwordHash String?
   postedRides Ride[] @relation("postedRides")

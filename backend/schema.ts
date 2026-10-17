@@ -41,4 +41,32 @@ export const inputRideSchema = z.object({
     .transform((value) => value.toFixed(2) as Numeric<10, 2>),
 });
 
-export type rideInput = z.infer<typeof inputRideSchema>;
+export const registerUserSchema = z.object({
+  firstName: z
+    .string()
+    .trim()
+    .min(1)
+    .max(50)
+    .transform((value) => value as Varchar<50>),
+  lastName: z
+    .string()
+    .trim()
+    .min(1)
+    .max(50)
+    .transform((value) => value as Varchar<50>),
+  email: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .max(255)
+    .pipe(z.email())
+    .refine((value) => value.endsWith("@albion.edu"), {
+      message: "Use your Albion email address",
+    })
+    .transform((value) => value as Varchar<255>),
+  password: z.string().min(12).max(255),
+});
+
+export type userRegisterType = z.infer<typeof registerUserSchema>;
+
+export type rideInputType = z.infer<typeof inputRideSchema>;

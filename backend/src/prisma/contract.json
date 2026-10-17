@@ -227,7 +227,7 @@
                   }
                 }
               },
-              "firstName": {
+              "first_name": {
                 "nullable": true,
                 "type": {
                   "codecId": "sql/varchar@1",
@@ -244,7 +244,7 @@
                   "kind": "scalar"
                 }
               },
-              "lastName": {
+              "last_name": {
                 "nullable": true,
                 "type": {
                   "codecId": "sql/varchar@1",
@@ -299,14 +299,14 @@
                 "email": {
                   "column": "email"
                 },
-                "firstName": {
-                  "column": "firstName"
+                "first_name": {
+                  "column": "first_name"
                 },
                 "id": {
                   "column": "id"
                 },
-                "lastName": {
-                  "column": "lastName"
+                "last_name": {
+                  "column": "last_name"
                 },
                 "passwordHash": {
                   "column": "passwordHash"
@@ -501,7 +501,7 @@
                     "length": 255
                   }
                 },
-                "firstName": {
+                "first_name": {
                   "codecId": "sql/varchar@1",
                   "dataType": "pg/varchar",
                   "nullable": true,
@@ -518,7 +518,7 @@
                   },
                   "nullable": false
                 },
-                "lastName": {
+                "last_name": {
                   "codecId": "sql/varchar@1",
                   "dataType": "pg/varchar",
                   "nullable": true,
@@ -562,7 +562,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "15acd8d0c53876c3b8c8a39db5d8507cf06630ceb3e891664bd81a58410a6194"
+    "storageHash": "b80b660c41ab0a19e3b06d4e7493b60dd284b8867b5abcdc05e777797e198d76"
   },
   "execution": {
     "executionHash": "8cd5898e020d4d5475142a0a5a857197bd21789683b554a7e38f1545f40b2ba1",
