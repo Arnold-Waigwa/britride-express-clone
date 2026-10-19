@@ -1,9 +1,15 @@
-import { Router } from "express";
-import { inputRideSchema } from "../../schema";
+import { Router, type Request, type Response } from "express";
+import { inputRideSchema, type rideInputType } from "../../schema";
 import { db } from "../../src/prisma/db";
 import requireAuth from "../../middleware/authentication";
+import validateBody from "../../middleware/validation";
 
 const router = Router();
+
+interface RideBodyLocals {
+  user: { id: number };
+  validatedBody: rideInputType;
+}
 
 router.get("/", async (_req, res) => {
   try {
@@ -15,28 +21,27 @@ router.get("/", async (_req, res) => {
   }
 });
 
-router.post("/", requireAuth, async (req, res) => {
-  const validated = inputRideSchema.safeParse(req.body);
+router.post(
+  "/",
+  [requireAuth, validateBody(inputRideSchema)],
+  async (_req: Request, res: Response<unknown, RideBodyLocals>) => {
+    const validated = res.locals.validatedBody;
 
-  if (!validated.success) {
-    res.status(400).json({ errors: validated.error.issues });
-    return;
-  }
+    const userId = res.locals.user.id;
 
-  const userId = res.locals.user.id;
+    try {
+      const createdRide = await db.orm.public.Ride.create({
+        ...validated,
+        posterId: userId,
+      });
 
-  try {
-    const createdRide = await db.orm.public.Ride.create({
-      ...validated.data,
-      posterId: userId,
-    });
-
-    res.status(201).json(createdRide);
-  } catch (error) {
-    console.error("Error creating ride:", error);
-    res.status(500).json({ error: "Unable to create ride" });
-  }
-});
+      res.status(201).json(createdRide);
+    } catch (error) {
+      console.error("Error creating ride:", error);
+      res.status(500).json({ error: "Unable to create ride" });
+    }
+  },
+);
 
 router.get("/:rideId", async (req, res) => {
   const rideId = Number(req.params.rideId);
@@ -62,36 +67,38 @@ router.get("/:rideId", async (req, res) => {
 });
 
 //send request with default current values to reuse inputRideSchema
-router.put("/:rideId", requireAuth, async (req, res) => {
-  const rideId = Number(req.params.rideId);
+router.put(
+  "/:rideId",
+  [requireAuth, validateBody(inputRideSchema)],
+  async (req: Request, res: Response<unknown, RideBodyLocals>) => {
+    const rideId = Number(req.params.rideId);
 
-  if (!Number.isInteger(rideId) || rideId < 1 || rideId > 2147483647)
-    return res.status(400).send({ error: "Invalid ride Id" });
+    if (!Number.isInteger(rideId) || rideId < 1 || rideId > 2147483647)
+      return res.status(400).send({ error: "Invalid ride Id" });
 
-  const userId = res.locals.user.id;
+    const {
+      user: { id: userId },
+      validatedBody: validated,
+    } = res.locals;
 
-  try {
-    const validated = inputRideSchema.safeParse(req.body);
+    try {
+      const ride = await db.orm.public.Ride.first({ id: rideId });
+      if (!ride) return res.status(404).send({ error: "ride not found" });
 
-    if (!validated.success)
-      return res.status(400).send({ errors: validated.error.issues });
+      if (ride.posterId !== userId)
+        return res.status(403).send("Cannot update a ride you did not post");
 
-    const ride = await db.orm.public.Ride.first({ id: rideId });
-    if (!ride) return res.status(404).send({ error: "ride not found" });
+      const updatedRide = await db.orm.public.Ride.where({ id: rideId }).update(
+        validated,
+      );
 
-    if (ride.posterId !== userId)
-      return res.status(403).send("Cannot update a ride you did not post");
-
-    const updatedRide = await db.orm.public.Ride.where({ id: rideId }).update(
-      validated.data,
-    );
-
-    res.send(updatedRide);
-  } catch (error) {
-    console.error("Error updating ride:", error);
-    res.status(500).json({ errors: "Unable to update ride" });
-  }
-});
+      res.send(updatedRide);
+    } catch (error) {
+      console.error("Error updating ride:", error);
+      res.status(500).json({ errors: "Unable to update ride" });
+    }
+  },
+);
 
 router.post("/:rideId/accept", requireAuth, async (req, res) => {
   const rideId = Number(req.params.rideId);

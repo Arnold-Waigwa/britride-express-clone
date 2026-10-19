@@ -1,47 +1,51 @@
-import express from "express";
-import { registerUserSchema } from "../../schema";
+import { Router, type Request, type Response } from "express";
+import { registerUserSchema, type userRegisterType } from "../../schema";
+import validateBody from "../../middleware/validation";
 import { db } from "../../src/prisma/db";
 import { generateJWT } from "../../utils";
 
-const router = express.Router();
+const router = Router();
 
-router.post("/", async (req, res) => {
-  const validated = registerUserSchema.safeParse(req.body);
+interface InputBodyLocals {
+  validatedBody: userRegisterType;
+}
 
-  if (!validated.success)
-    return res.status(400).send({ errors: validated.error.issues });
+router.post(
+  "/",
+  validateBody(registerUserSchema),
+  async (_req: Request, res: Response<unknown, InputBodyLocals>) => {
+    const { email, firstName, lastName, password } = res.locals.validatedBody;
 
-  const { email, firstName, lastName, password } = validated.data;
+    let user;
+    try {
+      //make sure user doesn't already exist
+      user = await db.orm.public.User.first({ email });
 
-  let user;
-  try {
-    //make sure user doesn't already exist
-    user = await db.orm.public.User.first({ email });
+      if (user)
+        return res.status(409).send("Email already associated with a user");
 
-    if (user)
-      return res.status(409).send("Email already associated with a user");
+      //safe to proceed
+      const hashedPassword = await Bun.password.hash(password);
+      user = await db.orm.public.User.create({
+        email,
+        first_name: firstName,
+        last_name: lastName,
+        passwordHash: hashedPassword,
+      });
 
-    //safe to proceed
-    const hashedPassword = await Bun.password.hash(password);
-    user = await db.orm.public.User.create({
-      email,
-      first_name: firstName,
-      last_name: lastName,
-      passwordHash: hashedPassword,
-    });
+      const token = await generateJWT({
+        email,
+        firstName,
+        lastName,
+        id: user.id,
+      });
 
-    const token = await generateJWT({
-      email,
-      firstName,
-      lastName,
-      id: user.id,
-    });
-
-    res.status(201).send({ token });
-  } catch (error) {
-    console.log("Error occurred creating user", error);
-    res.status(500).send({ error: "Internal server error" });
-  }
-});
+      res.status(201).send({ token });
+    } catch (error) {
+      console.log("Error occurred creating user", error);
+      res.status(500).send({ error: "Internal server error" });
+    }
+  },
+);
 
 export default router;

@@ -1,4 +1,4 @@
-import * as jose from "jose";
+import { SignJWT } from "jose";
 
 interface JwtPayLoad {
   email: string;
@@ -14,7 +14,7 @@ export const generateJWT = ({
   id,
 }: JwtPayLoad): Promise<string> => {
   const secret = new TextEncoder().encode(Bun.env.JWT_SECRET);
-  return new jose.SignJWT({
+  return new SignJWT({
     email,
     firstName,
     lastName,
