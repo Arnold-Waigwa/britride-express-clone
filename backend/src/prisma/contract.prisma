@@ -5,32 +5,33 @@ enum Status {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  first_name VarChar(50)?
-  last_name VarChar(50)?
-  email VarChar(255)? @unique
-  passwordHash String?
-  postedRides Ride[] @relation("postedRides")
-  acceptedRides Ride[] @relation("acceptedRides")
+  id            Int           @id @default(autoincrement())
+  googleId      String?       @unique
+  first_name    VarChar(50)?
+  last_name     VarChar(50)?
+  email         VarChar(255)? @unique
+  passwordHash  String?
+  postedRides   Ride[]        @relation("postedRides")
+  acceptedRides Ride[]        @relation("acceptedRides")
 
   @@map("users")
 }
 
 model Ride {
-  id Int @id @default(autoincrement())
-  title VarChar(50)
-  departureLocation VarChar(255)
+  id                  Int                        @id @default(autoincrement())
+  title               VarChar(50)
+  departureLocation   VarChar(255)
   destinationLocation VarChar(255)
-  departure Timestamp 
-  description String
-  price Numeric(10, 2)
-  status Status @default(OPEN)
-  createdAt Timestamp @default(now())
-  updatedAt temporal.updatedAtString()
-  posterId Int
-  acceptorId Int?
-  poster User @relation("postedRides", fields: [posterId], references: [id])
-  acceptor User? @relation("acceptedRides", fields: [acceptorId], references: [id])
+  departure           Timestamp
+  description         String
+  price               Numeric(10, 2)
+  status              Status                     @default(OPEN)
+  createdAt           Timestamp                  @default(now())
+  updatedAt           temporal.updatedAtString()
+  posterId            Int
+  acceptorId          Int?
+  poster              User                       @relation("postedRides", fields: [posterId], references: [id])
+  acceptor            User?                      @relation("acceptedRides", fields: [acceptorId], references: [id])
 
   @@map("rides")
 }

@@ -22,7 +22,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'b80b660c41ab0a19e3b06d4e7493b60dd284b8867b5abcdc05e777797e198d76'>;
+  StorageHashBase<'6aa044cdaf1e72b324c49994f8f40e77f4fb9204a1712b36aaaa756a74c85877'>;
 export type ExecutionHash =
   ExecutionHashBase<'8cd5898e020d4d5475142a0a5a857197bd21789683b554a7e38f1545f40b2ba1'>;
 export type ProfileHash =
@@ -255,6 +255,7 @@ export type FieldOutputTypes = {
     readonly User: {
       readonly email: Varchar<255> | null;
       readonly first_name: Varchar<50> | null;
+      readonly googleId: CodecTypes['pg/text@1']['output'] | null;
       readonly id: CodecTypes['pg/int4@1']['output'];
       readonly last_name: Varchar<50> | null;
       readonly passwordHash: CodecTypes['pg/text@1']['output'] | null;
@@ -280,6 +281,7 @@ export type FieldInputTypes = {
     readonly User: {
       readonly email: CodecTypes['sql/varchar@1']['input'] | null;
       readonly first_name: CodecTypes['sql/varchar@1']['input'] | null;
+      readonly googleId: CodecTypes['pg/text@1']['input'] | null;
       readonly id: CodecTypes['pg/int4@1']['input'];
       readonly last_name: CodecTypes['sql/varchar@1']['input'] | null;
       readonly passwordHash: CodecTypes['pg/text@1']['input'] | null;
@@ -305,6 +307,7 @@ export type StorageColumnTypes = {
     readonly users: {
       readonly email: Varchar<255> | null;
       readonly first_name: Varchar<50> | null;
+      readonly googleId: CodecTypes['pg/text@1']['output'] | null;
       readonly id: CodecTypes['pg/int4@1']['output'];
       readonly last_name: Varchar<50> | null;
       readonly passwordHash: CodecTypes['pg/text@1']['output'] | null;
@@ -330,6 +333,7 @@ export type StorageColumnInputTypes = {
     readonly users: {
       readonly email: CodecTypes['sql/varchar@1']['input'] | null;
       readonly first_name: CodecTypes['sql/varchar@1']['input'] | null;
+      readonly googleId: CodecTypes['pg/text@1']['input'] | null;
       readonly id: CodecTypes['pg/int4@1']['input'];
       readonly last_name: CodecTypes['sql/varchar@1']['input'] | null;
       readonly passwordHash: CodecTypes['pg/text@1']['input'] | null;
@@ -358,6 +362,7 @@ export namespace Models {
   export type public_User = {
     email: Varchar<255> | null;
     first_name: Varchar<50> | null;
+    googleId: CodecTypes['pg/text@1']['output'] | null;
     id: CodecTypes['pg/int4@1']['output'];
     last_name: Varchar<50> | null;
     passwordHash: CodecTypes['pg/text@1']['output'] | null;
@@ -539,6 +544,12 @@ type ContractBase = Omit<
                   readonly typeParams: { readonly length: 50 };
                   readonly many: false;
                 };
+                readonly googleId: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                  readonly many: false;
+                };
                 readonly id: {
                   readonly dataType: 'pg/int4';
                   readonly codecId: 'pg/int4@1';
@@ -564,7 +575,10 @@ type ContractBase = Omit<
                 };
               };
               primaryKey: { readonly columns: readonly ['id'] };
-              uniques: readonly [{ readonly columns: readonly ['email'] }];
+              uniques: readonly [
+                { readonly columns: readonly ['googleId'] },
+                { readonly columns: readonly ['email'] },
+              ];
               indexes: readonly [];
               foreignKeys: readonly [];
             };
@@ -725,6 +739,10 @@ type ContractBase = Omit<
                   readonly typeParams: { readonly length: 50 };
                 };
               };
+              readonly googleId: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
               readonly id: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
@@ -766,6 +784,7 @@ type ContractBase = Omit<
               readonly fields: {
                 readonly email: { readonly column: 'email' };
                 readonly first_name: { readonly column: 'first_name' };
+                readonly googleId: { readonly column: 'googleId' };
                 readonly id: { readonly column: 'id' };
                 readonly last_name: { readonly column: 'last_name' };
                 readonly passwordHash: { readonly column: 'passwordHash' };

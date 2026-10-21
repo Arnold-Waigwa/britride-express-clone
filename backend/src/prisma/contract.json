@@ -237,6 +237,13 @@
                   }
                 }
               },
+              "googleId": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
               "id": {
                 "nullable": false,
                 "type": {
@@ -301,6 +308,9 @@
                 },
                 "first_name": {
                   "column": "first_name"
+                },
+                "googleId": {
+                  "column": "googleId"
                 },
                 "id": {
                   "column": "id"
@@ -509,6 +519,11 @@
                     "length": 50
                   }
                 },
+                "googleId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true
+                },
                 "id": {
                   "codecId": "pg/int4@1",
                   "dataType": "pg/int4",
@@ -542,6 +557,11 @@
               "uniques": [
                 {
                   "columns": [
+                    "googleId"
+                  ]
+                },
+                {
+                  "columns": [
                     "email"
                   ]
                 }
@@ -562,7 +582,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "b80b660c41ab0a19e3b06d4e7493b60dd284b8867b5abcdc05e777797e198d76"
+    "storageHash": "6aa044cdaf1e72b324c49994f8f40e77f4fb9204a1712b36aaaa756a74c85877"
   },
   "execution": {
     "executionHash": "8cd5898e020d4d5475142a0a5a857197bd21789683b554a7e38f1545f40b2ba1",

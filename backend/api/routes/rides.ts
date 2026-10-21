@@ -25,9 +25,10 @@ router.post(
   "/",
   [requireAuth, validateBody(inputRideSchema)],
   async (_req: Request, res: Response<unknown, RideBodyLocals>) => {
-    const validated = res.locals.validatedBody;
-
-    const userId = res.locals.user.id;
+    const {
+      user: { id: userId },
+      validatedBody: validated,
+    } = res.locals;
 
     try {
       const createdRide = await db.orm.public.Ride.create({
