@@ -22,7 +22,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'6aa044cdaf1e72b324c49994f8f40e77f4fb9204a1712b36aaaa756a74c85877'>;
+  StorageHashBase<'4dc9dd4a876baf6e6fd6b8aa5759b6fe852efda4c4e61eed5347c664eef2b4ec'>;
 export type ExecutionHash =
   ExecutionHashBase<'8cd5898e020d4d5475142a0a5a857197bd21789683b554a7e38f1545f40b2ba1'>;
 export type ProfileHash =
@@ -238,6 +238,14 @@ type DefaultLiteralValue<CodecId extends string, Encoded> = CodecId extends keyo
 
 export type FieldOutputTypes = {
   readonly public: {
+    readonly Message: {
+      readonly content: CodecTypes['pg/text@1']['output'];
+      readonly createdAt: CodecTypes['pg/timestamp-temporal@1']['output'];
+      readonly id: CodecTypes['pg/int4@1']['output'];
+      readonly receiver_id: CodecTypes['pg/int4@1']['output'] | null;
+      readonly rideId: CodecTypes['pg/int4@1']['output'];
+      readonly sender_id: CodecTypes['pg/int4@1']['output'] | null;
+    };
     readonly Ride: {
       readonly acceptorId: CodecTypes['pg/int4@1']['output'] | null;
       readonly createdAt: CodecTypes['pg/timestamp-temporal@1']['output'];
@@ -264,6 +272,14 @@ export type FieldOutputTypes = {
 };
 export type FieldInputTypes = {
   readonly public: {
+    readonly Message: {
+      readonly content: CodecTypes['pg/text@1']['input'];
+      readonly createdAt: CodecTypes['pg/timestamp-temporal@1']['input'];
+      readonly id: CodecTypes['pg/int4@1']['input'];
+      readonly receiver_id: CodecTypes['pg/int4@1']['input'] | null;
+      readonly rideId: CodecTypes['pg/int4@1']['input'];
+      readonly sender_id: CodecTypes['pg/int4@1']['input'] | null;
+    };
     readonly Ride: {
       readonly acceptorId: CodecTypes['pg/int4@1']['input'] | null;
       readonly createdAt: CodecTypes['pg/timestamp-temporal@1']['input'];
@@ -290,6 +306,14 @@ export type FieldInputTypes = {
 };
 export type StorageColumnTypes = {
   readonly public: {
+    readonly messages: {
+      readonly content: CodecTypes['pg/text@1']['output'];
+      readonly createdAt: CodecTypes['pg/timestamp-temporal@1']['output'];
+      readonly id: CodecTypes['pg/int4@1']['output'];
+      readonly receiver_id: CodecTypes['pg/int4@1']['output'] | null;
+      readonly rideId: CodecTypes['pg/int4@1']['output'];
+      readonly sender_id: CodecTypes['pg/int4@1']['output'] | null;
+    };
     readonly rides: {
       readonly acceptorId: CodecTypes['pg/int4@1']['output'] | null;
       readonly createdAt: CodecTypes['pg/timestamp-temporal@1']['output'];
@@ -316,6 +340,14 @@ export type StorageColumnTypes = {
 };
 export type StorageColumnInputTypes = {
   readonly public: {
+    readonly messages: {
+      readonly content: CodecTypes['pg/text@1']['input'];
+      readonly createdAt: CodecTypes['pg/timestamp-temporal@1']['input'];
+      readonly id: CodecTypes['pg/int4@1']['input'];
+      readonly receiver_id: CodecTypes['pg/int4@1']['input'] | null;
+      readonly rideId: CodecTypes['pg/int4@1']['input'];
+      readonly sender_id: CodecTypes['pg/int4@1']['input'] | null;
+    };
     readonly rides: {
       readonly acceptorId: CodecTypes['pg/int4@1']['input'] | null;
       readonly createdAt: CodecTypes['pg/timestamp-temporal@1']['input'];
@@ -342,6 +374,18 @@ export type StorageColumnInputTypes = {
 };
 
 export namespace Models {
+  export type public_Message = {
+    content: CodecTypes['pg/text@1']['output'];
+    createdAt: CodecTypes['pg/timestamp-temporal@1']['output'];
+    id: CodecTypes['pg/int4@1']['output'];
+    receiver_id: CodecTypes['pg/int4@1']['output'] | null;
+    rideId: CodecTypes['pg/int4@1']['output'];
+    sender_id: CodecTypes['pg/int4@1']['output'] | null;
+    receiver: public_User | null;
+    ride: public_Ride;
+    sender: public_User | null;
+    readonly [RelationKeys]?: 'receiver' | 'ride' | 'sender';
+  };
   export type public_Ride = {
     acceptorId: CodecTypes['pg/int4@1']['output'] | null;
     createdAt: CodecTypes['pg/timestamp-temporal@1']['output'];
@@ -356,8 +400,9 @@ export namespace Models {
     title: Varchar<50>;
     updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
     acceptor: public_User | null;
+    messages: public_Message[];
     poster: public_User;
-    readonly [RelationKeys]?: 'acceptor' | 'poster';
+    readonly [RelationKeys]?: 'acceptor' | 'messages' | 'poster';
   };
   export type public_User = {
     email: Varchar<255> | null;
@@ -368,12 +413,15 @@ export namespace Models {
     passwordHash: CodecTypes['pg/text@1']['output'] | null;
     acceptedRides: public_Ride[];
     postedRides: public_Ride[];
-    readonly [RelationKeys]?: 'acceptedRides' | 'postedRides';
+    receivedMessages: public_Message[];
+    sentMessages: public_Message[];
+    readonly [RelationKeys]?: 'acceptedRides' | 'postedRides' | 'receivedMessages' | 'sentMessages';
   };
 }
 
 export declare const models: {
   public: {
+    Message: Models.public_Message;
     Ride: Models.public_Ride;
     User: Models.public_User;
   };
@@ -397,6 +445,111 @@ type ContractBase = Omit<
         readonly kind: 'postgres-schema';
         readonly entries: {
           readonly table: {
+            readonly messages: {
+              columns: {
+                readonly content: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly createdAt: {
+                  readonly dataType: 'pg/timestamp';
+                  readonly codecId: 'pg/timestamp-temporal@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                  readonly many: false;
+                };
+                readonly id: {
+                  readonly dataType: 'pg/int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'function';
+                    readonly expression: 'autoincrement()';
+                  };
+                  readonly many: false;
+                };
+                readonly receiver_id: {
+                  readonly dataType: 'pg/int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: true;
+                  readonly many: false;
+                };
+                readonly rideId: {
+                  readonly dataType: 'pg/int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly sender_id: {
+                  readonly dataType: 'pg/int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: true;
+                  readonly many: false;
+                };
+              };
+              primaryKey: { readonly columns: readonly ['id'] };
+              uniques: readonly [];
+              indexes: readonly [
+                {
+                  readonly name: 'messages_receiver_id_idx_7bffc4d3';
+                  readonly prefix: 'messages_receiver_id_idx';
+                  readonly columns: readonly ['receiver_id'];
+                  readonly unique: false;
+                },
+                {
+                  readonly name: 'messages_rideId_idx_2125d498';
+                  readonly prefix: 'messages_rideId_idx';
+                  readonly columns: readonly ['rideId'];
+                  readonly unique: false;
+                },
+                {
+                  readonly name: 'messages_sender_id_idx_311853a4';
+                  readonly prefix: 'messages_sender_id_idx';
+                  readonly columns: readonly ['sender_id'];
+                  readonly unique: false;
+                },
+              ];
+              foreignKeys: readonly [
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'messages';
+                    readonly columns: readonly ['sender_id'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'users';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'messages';
+                    readonly columns: readonly ['receiver_id'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'users';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'messages';
+                    readonly columns: readonly ['rideId'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'rides';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+              ];
+            };
             readonly rides: {
               columns: {
                 readonly acceptorId: {
@@ -599,6 +752,7 @@ type ContractBase = Omit<
   readonly target: 'postgres';
   readonly targetFamily: 'sql';
   readonly roots: {
+    readonly messages: { readonly namespace: 'public' & NamespaceId; readonly model: 'Message' };
     readonly rides: { readonly namespace: 'public' & NamespaceId; readonly model: 'Ride' };
     readonly users: { readonly namespace: 'public' & NamespaceId; readonly model: 'User' };
   };
@@ -606,6 +760,78 @@ type ContractBase = Omit<
     readonly namespaces: {
       readonly public: {
         readonly models: {
+          readonly Message: {
+            readonly fields: {
+              readonly content: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly createdAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamp-temporal@1';
+                };
+              };
+              readonly id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly receiver_id: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly rideId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly sender_id: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+            };
+            readonly relations: {
+              readonly receiver: {
+                readonly to: { readonly namespace: 'public' & NamespaceId; readonly model: 'User' };
+                readonly cardinality: 'N:1';
+                readonly nullable: true;
+                readonly on: {
+                  readonly localFields: readonly ['receiver_id'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+              readonly ride: {
+                readonly to: { readonly namespace: 'public' & NamespaceId; readonly model: 'Ride' };
+                readonly cardinality: 'N:1';
+                readonly nullable: false;
+                readonly on: {
+                  readonly localFields: readonly ['rideId'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+              readonly sender: {
+                readonly to: { readonly namespace: 'public' & NamespaceId; readonly model: 'User' };
+                readonly cardinality: 'N:1';
+                readonly nullable: true;
+                readonly on: {
+                  readonly localFields: readonly ['sender_id'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+            };
+            readonly storage: {
+              readonly table: 'messages';
+              readonly namespaceId: 'public';
+              readonly fields: {
+                readonly content: { readonly column: 'content' };
+                readonly createdAt: { readonly column: 'createdAt' };
+                readonly id: { readonly column: 'id' };
+                readonly receiver_id: { readonly column: 'receiver_id' };
+                readonly rideId: { readonly column: 'rideId' };
+                readonly sender_id: { readonly column: 'sender_id' };
+              };
+            };
+          };
           readonly Ride: {
             readonly fields: {
               readonly acceptorId: {
@@ -692,6 +918,17 @@ type ContractBase = Omit<
                   readonly targetFields: readonly ['id'];
                 };
               };
+              readonly messages: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'Message';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['rideId'];
+                };
+              };
               readonly poster: {
                 readonly to: { readonly namespace: 'public' & NamespaceId; readonly model: 'User' };
                 readonly cardinality: 'N:1';
@@ -775,6 +1012,28 @@ type ContractBase = Omit<
                 readonly on: {
                   readonly localFields: readonly ['id'];
                   readonly targetFields: readonly ['posterId'];
+                };
+              };
+              readonly receivedMessages: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'Message';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['receiver_id'];
+                };
+              };
+              readonly sentMessages: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'Message';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['sender_id'];
                 };
               };
             };

@@ -1,0 +1,452 @@
+[
+  {
+    "id": "dropConstraint.rides.rides_posterId_fkey",
+    "label": "Drop constraint \"rides_posterId_fkey\" on \"rides\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "rides_posterId_fkey",
+        "table": "rides"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"rides_posterId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "rides_posterId_fkey",
+          "public",
+          "\"public\".\"rides\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop constraint \"rides_posterId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"rides\" DROP CONSTRAINT \"rides_posterId_fkey\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"rides_posterId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "rides_posterId_fkey",
+          "public",
+          "\"public\".\"rides\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.rides.rides_posterId_fkey",
+    "label": "Add foreign key \"rides_posterId_fkey\" on \"rides\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "rides_posterId_fkey",
+        "table": "rides"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"rides_posterId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "rides_posterId_fkey",
+          "public",
+          "\"public\".\"rides\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"rides_posterId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"rides\"\nADD CONSTRAINT \"rides_posterId_fkey\"\nFOREIGN KEY (\"posterId\")\nREFERENCES \"public\".\"users\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"rides_posterId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "rides_posterId_fkey",
+          "public",
+          "\"public\".\"rides\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dropConstraint.rides.rides_acceptorId_fkey",
+    "label": "Drop constraint \"rides_acceptorId_fkey\" on \"rides\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "rides_acceptorId_fkey",
+        "table": "rides"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"rides_acceptorId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "rides_acceptorId_fkey",
+          "public",
+          "\"public\".\"rides\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop constraint \"rides_acceptorId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"rides\" DROP CONSTRAINT \"rides_acceptorId_fkey\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"rides_acceptorId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "rides_acceptorId_fkey",
+          "public",
+          "\"public\".\"rides\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.rides.rides_acceptorId_fkey",
+    "label": "Add foreign key \"rides_acceptorId_fkey\" on \"rides\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "rides_acceptorId_fkey",
+        "table": "rides"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"rides_acceptorId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "rides_acceptorId_fkey",
+          "public",
+          "\"public\".\"rides\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"rides_acceptorId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"rides\"\nADD CONSTRAINT \"rides_acceptorId_fkey\"\nFOREIGN KEY (\"acceptorId\")\nREFERENCES \"public\".\"users\" (\"id\")\nON DELETE SET NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"rides_acceptorId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "rides_acceptorId_fkey",
+          "public",
+          "\"public\".\"rides\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.messages",
+    "label": "Create table \"messages\"",
+    "summary": "Creates table \"messages\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "messages"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"messages\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"messages\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"messages\"",
+        "sql": "CREATE TABLE \"public\".\"messages\" (\n  \"content\" text NOT NULL,\n  \"createdAt\" timestamp DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"receiver_id\" int4,\n  \"rideId\" int4 NOT NULL,\n  \"sender_id\" int4,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"messages\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"messages\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.messages.messages_receiver_id_idx_7bffc4d3",
+    "label": "Create index \"messages_receiver_id_idx_7bffc4d3\" on \"messages\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "messages_receiver_id_idx_7bffc4d3",
+        "table": "messages"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"messages_receiver_id_idx_7bffc4d3\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"messages_receiver_id_idx_7bffc4d3\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"messages_receiver_id_idx_7bffc4d3\"",
+        "sql": "CREATE INDEX \"messages_receiver_id_idx_7bffc4d3\" ON \"public\".\"messages\" (\"receiver_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"messages_receiver_id_idx_7bffc4d3\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"messages_receiver_id_idx_7bffc4d3\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.messages.messages_rideId_idx_2125d498",
+    "label": "Create index \"messages_rideId_idx_2125d498\" on \"messages\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "messages_rideId_idx_2125d498",
+        "table": "messages"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"messages_rideId_idx_2125d498\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"messages_rideId_idx_2125d498\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"messages_rideId_idx_2125d498\"",
+        "sql": "CREATE INDEX \"messages_rideId_idx_2125d498\" ON \"public\".\"messages\" (\"rideId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"messages_rideId_idx_2125d498\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"messages_rideId_idx_2125d498\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.messages.messages_sender_id_idx_311853a4",
+    "label": "Create index \"messages_sender_id_idx_311853a4\" on \"messages\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "messages_sender_id_idx_311853a4",
+        "table": "messages"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"messages_sender_id_idx_311853a4\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"messages_sender_id_idx_311853a4\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"messages_sender_id_idx_311853a4\"",
+        "sql": "CREATE INDEX \"messages_sender_id_idx_311853a4\" ON \"public\".\"messages\" (\"sender_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"messages_sender_id_idx_311853a4\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"messages_sender_id_idx_311853a4\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.messages.messages_sender_id_fkey",
+    "label": "Add foreign key \"messages_sender_id_fkey\" on \"messages\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "messages_sender_id_fkey",
+        "table": "messages"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"messages_sender_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "messages_sender_id_fkey",
+          "public",
+          "\"public\".\"messages\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"messages_sender_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"messages\"\nADD CONSTRAINT \"messages_sender_id_fkey\"\nFOREIGN KEY (\"sender_id\")\nREFERENCES \"public\".\"users\" (\"id\")\nON DELETE SET NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"messages_sender_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "messages_sender_id_fkey",
+          "public",
+          "\"public\".\"messages\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.messages.messages_receiver_id_fkey",
+    "label": "Add foreign key \"messages_receiver_id_fkey\" on \"messages\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "messages_receiver_id_fkey",
+        "table": "messages"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"messages_receiver_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "messages_receiver_id_fkey",
+          "public",
+          "\"public\".\"messages\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"messages_receiver_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"messages\"\nADD CONSTRAINT \"messages_receiver_id_fkey\"\nFOREIGN KEY (\"receiver_id\")\nREFERENCES \"public\".\"users\" (\"id\")\nON DELETE SET NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"messages_receiver_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "messages_receiver_id_fkey",
+          "public",
+          "\"public\".\"messages\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.messages.messages_rideId_fkey",
+    "label": "Add foreign key \"messages_rideId_fkey\" on \"messages\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "messages_rideId_fkey",
+        "table": "messages"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"messages_rideId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "messages_rideId_fkey",
+          "public",
+          "\"public\".\"messages\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"messages_rideId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"messages\"\nADD CONSTRAINT \"messages_rideId_fkey\"\nFOREIGN KEY (\"rideId\")\nREFERENCES \"public\".\"rides\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"messages_rideId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "messages_rideId_fkey",
+          "public",
+          "\"public\".\"messages\""
+        ]
+      }
+    ]
+  }
+]

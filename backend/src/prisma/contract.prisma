@@ -5,14 +5,16 @@ enum Status {
 }
 
 model User {
-  id            Int           @id @default(autoincrement())
-  googleId      String?       @unique
-  first_name    VarChar(50)?
-  last_name     VarChar(50)?
-  email         VarChar(255)? @unique
-  passwordHash  String?
-  postedRides   Ride[]        @relation("postedRides")
-  acceptedRides Ride[]        @relation("acceptedRides")
+  id               Int           @id @default(autoincrement())
+  googleId         String?       @unique
+  first_name       VarChar(50)?
+  last_name        VarChar(50)?
+  email            VarChar(255)? @unique
+  passwordHash     String?
+  postedRides      Ride[]        @relation("postedRides")
+  acceptedRides    Ride[]        @relation("acceptedRides")
+  sentMessages     Message[]     @relation("sentMessages")
+  receivedMessages Message[]     @relation("receivedMessages")
 
   @@map("users")
 }
@@ -30,8 +32,23 @@ model Ride {
   updatedAt           temporal.updatedAtString()
   posterId            Int
   acceptorId          Int?
-  poster              User                       @relation("postedRides", fields: [posterId], references: [id])
-  acceptor            User?                      @relation("acceptedRides", fields: [acceptorId], references: [id])
+  poster              User                       @relation("postedRides", fields: [posterId], references: [id], onDelete: Cascade)
+  acceptor            User?                      @relation("acceptedRides", fields: [acceptorId], references: [id], onDelete: SetNull)
+  messages            Message[]                  @relation("messages")
 
   @@map("rides")
+}
+
+model Message {
+  id          Int       @id @default(autoincrement())
+  rideId      Int
+  sender_id   Int?
+  receiver_id Int?
+  content     String
+  createdAt   Timestamp @default(now())
+  sender      User?     @relation("sentMessages", fields: [sender_id], references: [id], onDelete: SetNull)
+  receiver    User?     @relation("receivedMessages", fields: [receiver_id], references: [id], onDelete: SetNull)
+  ride        Ride      @relation("messages", fields: [rideId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
 }
