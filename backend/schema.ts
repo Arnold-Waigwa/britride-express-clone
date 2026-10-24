@@ -81,6 +81,13 @@ export const signInUserSchema = z.object({
   password: z.string().min(1).max(255),
 });
 
+export const messageSchema = z.object({
+  rideId: z.number().int().positive().max(2147483647),
+  content: z.string().trim().min(1).max(5000),
+});
+
+export type messageSchemaType = z.infer<typeof messageSchema>;
+
 export type userSignInType = z.infer<typeof signInUserSchema>;
 
 export type userRegisterType = z.infer<typeof registerUserSchema>;
