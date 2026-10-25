@@ -3,6 +3,7 @@ import requireAuth from "../../middleware/authentication";
 import validateBody from "../../middleware/validation";
 import { messageSchema, type messageSchemaType } from "../../schema";
 import { db } from "../../src/prisma/db";
+import { pusher } from "../../utils";
 
 const router = Router();
 
@@ -76,6 +77,9 @@ router.post(
         receiver_id: receiverId,
         sender_id: senderId,
       });
+
+      //publish the message
+      await pusher.trigger(`ride-${rideId}`, "message", message);
 
       res.status(201).send(message);
     } catch (error) {

@@ -3,6 +3,7 @@ import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { db } from "./src/prisma/db";
 import { registerUserSchema } from "./schema";
+import Pusher from "pusher";
 
 const googleUserSchema = registerUserSchema.omit({ password: true });
 
@@ -80,3 +81,11 @@ export function initializePassport() {
     ),
   );
 }
+
+export const pusher = new Pusher({
+  appId: Bun.env.app_id!,
+  key: Bun.env.key!,
+  secret: Bun.env.secret!,
+  cluster: Bun.env.cluster!,
+  useTLS: true,
+});

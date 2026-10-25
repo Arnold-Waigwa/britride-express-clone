@@ -10,9 +10,9 @@
       cluster: "us2",
     });
 
-    const channel = pusher.subscribe("my-channel");
-    channel.bind("my-event", function (data) {
-      alert(JSON.stringify(data));
+    const channel = pusher.subscribe("ride-24");
+    channel.bind("message", function (data) {
+      console.log(JSON.stringify(data));
     });
   </script>
 </head>
