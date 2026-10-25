@@ -24,7 +24,9 @@ router.get(
     const userId = res.locals.user.id;
 
     try {
-      const messages = await db.orm.public.Message.where({ rideId }).all();
+      const messages = await db.orm.public.Message.where({ rideId })
+        .orderBy([(m) => m.id.asc(), (m) => m.createdAt.asc()])
+        .all();
 
       if (messages.length === 0) return res.status(200).send(messages);
 
