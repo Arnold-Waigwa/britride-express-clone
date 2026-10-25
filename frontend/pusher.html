@@ -6,11 +6,21 @@
     // Enable pusher logging - don't include this in production
     Pusher.logToConsole = true;
 
+    const token =
+      "eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFndzEzQGFsYmlvbi5lZHUiLCJmaXJzdE5hbWUiOiJBcm5vbGQiLCJsYXN0TmFtZSI6IldhaWd3YSIsImlkIjo0NSwiZXhwIjoxNzkyOTc1Mjc3fQ.gF_b_bI0v33CKbndZd7faXDRg-WLdCnv5iDJY0RhVX8";
+
     const pusher = new Pusher("b98a27efd88b66438ca3", {
       cluster: "us2",
+      channelAuthorization: {
+        endpoint: "http://localhost:3000/api/auth/pusher",
+        transport: "ajax",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
     });
 
-    const channel = pusher.subscribe("ride-24");
+    const channel = pusher.subscribe("private-ride-24");
     channel.bind("message", function (data) {
       console.log(JSON.stringify(data));
     });

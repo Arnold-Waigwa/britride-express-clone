@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import ridesRouter from "./api/routes/rides";
 import registerRouter from "./api/auth/register";
 import signInRouter from "./api/auth/sign-in";
@@ -6,9 +7,12 @@ import messageRouter from "./api/routes/message";
 import passport from "passport";
 import { initializePassport } from "./utils";
 import googleSignInRouter from "./api/auth/google";
+import pusherRouter from "./api/auth/pusher";
 
 const app = express();
 app.use(express.json());
+app.use(cors());
+app.use(express.urlencoded({ extended: false }));
 
 if (!Bun.env.JWT_SECRET) {
   throw new Error("No jwt secret in the environment");
@@ -24,5 +28,6 @@ app.use("/api/messages", messageRouter);
 app.use("/api/auth/register", registerRouter);
 app.use("/api/auth/sign-in", signInRouter);
 app.use("/api/auth/google", googleSignInRouter);
+app.use("/api/auth/pusher", pusherRouter);
 
 app.listen(3000, () => console.log("listening on port 3000"));

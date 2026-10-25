@@ -79,7 +79,7 @@ router.post(
       });
 
       //publish the message
-      await pusher.trigger(`ride-${rideId}`, "message", message);
+      await pusher.trigger(`private-ride-${rideId}`, "message", message);
 
       res.status(201).send(message);
     } catch (error) {
