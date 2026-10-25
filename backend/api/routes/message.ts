@@ -24,17 +24,16 @@ router.get(
     const userId = res.locals.user.id;
 
     try {
-      const messages = await db.orm.public.Message.where({ rideId })
-        .orderBy([(m) => m.id.asc(), (m) => m.createdAt.asc()])
-        .all();
+      const ride = await db.orm.public.Ride.first({ id: rideId });
 
-      if (messages.length === 0) return res.status(200).send(messages);
+      if (!ride) return res.status(404).send("Ride doesn't exist");
 
-      if (
-        userId !== messages[0].receiver_id &&
-        userId !== messages[0].sender_id
-      )
+      if (userId !== ride.acceptorId && userId !== ride.posterId)
         return res.status(403).send("Cannot fetch messages for this ride");
+
+      const messages = await db.orm.public.Message.where({ rideId })
+        .orderBy([(m) => m.createdAt.asc(), (m) => m.id.asc()])
+        .all();
 
       res.send(messages);
     } catch (error) {
