@@ -4,6 +4,7 @@ import { db } from "../../src/prisma/db";
 import requireAuth from "../../middleware/authentication";
 import validateBody from "../../middleware/validation";
 import { pusher } from "../../utils";
+import { or } from "@prisma/orm-postgres/orm-client";
 
 const router = Router();
 
@@ -21,6 +22,25 @@ router.get("/", async (_req, res) => {
     res.status(500).json({ error: "Unable to fetch rides" });
   }
 });
+
+router.get(
+  "/my-rides",
+  requireAuth,
+  async (_req, res: Response<unknown, { user: { id: number } }>) => {
+    const userId = res.locals.user.id;
+
+    try {
+      const rides = await db.orm.public.Ride.where((ride) =>
+        or(ride.posterId.eq(userId), ride.acceptorId.eq(userId)),
+      ).all();
+
+      return res.json(rides);
+    } catch (error) {
+      console.error("Error getting my rides:", error);
+      return res.status(500).json({ error: "Unable to fetch rides" });
+    }
+  },
+);
 
 router.post(
   "/",
