@@ -78,8 +78,28 @@ router.post(
         sender_id: senderId,
       });
 
-      //publish the message
-      await pusher.trigger(`private-ride-${rideId}`, "message", message);
+      try {
+        await pusher.trigger(`private-ride-${rideId}`, "message", message);
+      } catch (error) {
+        console.error("Unable to publish saved message:", {
+          rideId,
+          messageId: message.id,
+          error,
+        });
+      }
+
+      try {
+        await pusher.trigger(`private-user-${receiverId}`, "message-received", {
+          type: "message",
+        });
+      } catch (error) {
+        console.error("Unable to publish message notification:", {
+          rideId,
+          messageId: message.id,
+          receiverId,
+          error,
+        });
+      }
 
       res.status(201).send(message);
     } catch (error) {

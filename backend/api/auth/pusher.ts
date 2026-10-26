@@ -9,26 +9,48 @@ router.post(
   "/",
   requireAuth,
   async (req: Request, res: Response<unknown, { user: { id: number } }>) => {
-    const socketId = req.body.socket_id;
-    const channel = req.body.channel_name;
-
-    const rideId = Number(channel.split("-").pop());
-
-    if (!Number.isInteger(rideId) || rideId < 1 || rideId > 2147483647) {
-      return res.status(400).json({ error: "Invalid ride ID" });
-    }
-
-    const ride = await db.orm.public.Ride.first({ id: rideId });
-
-    if (!ride) return res.status(404).json({ error: "Ride doesn't exist" });
-
+    const { socket_id: socketId, channel_name: channel } = req.body;
     const userId = res.locals.user.id;
 
-    if (userId !== ride.acceptorId && userId !== ride.posterId)
-      return res.status(403).send("forbidden");
+    if (typeof socketId !== "string" || typeof channel !== "string") {
+      return res.status(400).json({ error: "Invalid channel auth request" });
+    }
 
-    const authResponse = pusher.authorizeChannel(socketId, channel);
-    res.send(authResponse);
+    try {
+      const userMatch = /^private-user-([1-9]\d*)$/.exec(channel);
+      const rideMatch = /^private-ride-([1-9]\d*)$/.exec(channel);
+
+      if (userMatch) {
+        const channelUserId = Number(userMatch[1]);
+
+        if (channelUserId !== userId) {
+          return res.status(403).json({ error: "Forbidden" });
+        }
+      } else if (rideMatch) {
+        const rideId = Number(rideMatch[1]);
+
+        if (!Number.isInteger(rideId) || rideId > 2147483647) {
+          return res.status(400).json({ error: "Invalid ride ID" });
+        }
+
+        const ride = await db.orm.public.Ride.first({ id: rideId });
+
+        if (!ride) {
+          return res.status(404).json({ error: "Ride not found" });
+        }
+
+        if (userId !== ride.posterId && userId !== ride.acceptorId) {
+          return res.status(403).json({ error: "Forbidden" });
+        }
+      } else {
+        return res.status(403).json({ error: "Unsupported channel" });
+      }
+
+      return res.json(pusher.authorizeChannel(socketId, channel));
+    } catch (error) {
+      console.error("Error authorizing Pusher channel:", error);
+      return res.status(500).json({ error: "Unable to authorize channel" });
+    }
   },
 );
 

@@ -3,6 +3,7 @@ import { inputRideSchema, type rideInputType } from "../../schema";
 import { db } from "../../src/prisma/db";
 import requireAuth from "../../middleware/authentication";
 import validateBody from "../../middleware/validation";
+import { pusher } from "../../utils";
 
 const router = Router();
 
@@ -135,6 +136,18 @@ router.post("/:rideId/accept", requireAuth, async (req, res) => {
       });
     }
 
+    // The ride is accepted even if its notification cannot be published.
+    try {
+      await pusher.trigger(`private-user-${ride.posterId}`, "ride-accepted", {
+        type: "ride-accepted",
+      });
+    } catch (error) {
+      console.error("Unable to publish ride acceptance notification:", {
+        rideId,
+        posterId: ride.posterId,
+        error,
+      });
+    }
     return res.status(200).json(updatedRide);
   } catch (error) {
     console.error("Error accepting ride:", error);
