@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 type Ride = {
   id: number;
   title: string;
@@ -20,7 +19,9 @@ const App = () => {
   return (
     <div>
       {rides.map((ride) => (
-        <li key={ride.id}>{ride.title}</li>
+        <li key={ride.id} className="text-amber-300">
+          {ride.title}
+        </li>
       ))}
     </div>
   );
