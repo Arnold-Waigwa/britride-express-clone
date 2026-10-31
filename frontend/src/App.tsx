@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Navbar from "./components/Navbar";
 type Ride = {
   id: number;
   title: string;
@@ -17,7 +18,8 @@ const App = () => {
     fetchRides();
   }, []);
   return (
-    <div>
+    <div className="max-w-6xl mx-auto">
+      <Navbar />
       {rides.map((ride) => (
         <li key={ride.id} className="text-amber-300">
           {ride.title}
