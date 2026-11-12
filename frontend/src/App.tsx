@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
+import RideCard from "./components/RideCard";
 type Ride = {
   id: number;
   title: string;
+  departureLocation: string;
+  price: number;
+  status: "OPEN" | "ACCEPTED";
 };
 
 const App = () => {
@@ -18,14 +22,20 @@ const App = () => {
     fetchRides();
   }, []);
   return (
-    <div className="max-w-6xl mx-auto">
+    <main className="max-w-6xl mx-auto">
       <Navbar />
-      {rides.map((ride) => (
-        <li key={ride.id} className="text-amber-300">
-          {ride.title}
-        </li>
-      ))}
-    </div>
+      <div className="mx-auto flex w-full max-w-125 flex-col gap-4 my-4">
+        {rides.map((ride) => (
+          <RideCard
+            key={ride.id}
+            location={ride.departureLocation}
+            price={ride.price}
+            title={ride.title}
+            status={ride.status}
+          />
+        ))}
+      </div>
+    </main>
   );
 };
 

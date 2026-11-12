@@ -9,19 +9,19 @@ import {
 import {
   NavigationMenu,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const paths: { label: string; url: string }[] = [
     { label: "Rides", url: "/rides" },
-    { label: "Create New Rides", url: "/create-ride" },
+    { label: "Create New Ride", url: "/create-ride" },
     { label: "My Rides", url: "/my-rides" },
   ];
 
   return (
-    <header className="flex justify-between items-center">
+    <header className="flex justify-between items-center border-b-2 mb-2 p-4">
       <div className="flex-1">
         <h1>BritRide</h1>
       </div>
@@ -29,9 +29,12 @@ const Navbar = () => {
         <NavigationMenuList>
           {paths.map((path) => (
             <NavigationMenuItem key={path.url}>
-              <NavigationMenuLink href={path.url}>
+              <Link
+                to={path.url}
+                className="flex items-center gap-1.5 rounded-md p-2 text-sm transition-all outline-none hover:bg-muted focus:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+              >
                 {path.label}
-              </NavigationMenuLink>
+              </Link>
             </NavigationMenuItem>
           ))}
         </NavigationMenuList>
