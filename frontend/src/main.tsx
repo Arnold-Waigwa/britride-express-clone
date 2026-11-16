@@ -4,6 +4,8 @@ import "./index.css";
 import App from "./App.tsx";
 import CreateRide from "./pages/CreateRide.tsx";
 import MyRides from "./pages/MyRides.tsx";
+import Register from "./pages/Register.tsx";
+import Login from "./pages/Login.tsx";
 
 import {
   createBrowserRouter,
@@ -19,6 +21,8 @@ const router = createBrowserRouter([
     element: <CreateRide />,
   },
   { path: "/my-rides", element: <MyRides /> },
+  { path: "/register", element: <Register /> },
+  { path: "/login", element: <Login /> },
 ]);
 
 createRoot(document.getElementById("root")!).render(
