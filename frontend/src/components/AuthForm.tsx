@@ -49,10 +49,12 @@ const AuthForm = ({ type }: { type: "login" | "register" }) => {
   const onSubmit = async (values: Form) => {
     clearErrors("root");
     try {
-      await api.post(
+      const { data } = await api.post<{ token: string }>(
         isLogin ? "/auth/sign-in" : "/auth/register",
         values,
       );
+      if (!data.token) throw new Error("Missing authentication token");
+      sessionStorage.setItem("authToken", data.token);
       navigate("/rides", { replace: true });
     } catch (error: unknown) {
       const body = axios.isAxiosError<
@@ -152,6 +154,7 @@ const AuthForm = ({ type }: { type: "login" | "register" }) => {
               <label htmlFor="email" className="font-medium">
                 Email
               </label>
+              k
               <input
                 placeholder="janedoe@albion.edu"
                 id="email"
