@@ -49,12 +49,10 @@ const AuthForm = ({ type }: { type: "login" | "register" }) => {
   const onSubmit = async (values: Form) => {
     clearErrors("root");
     try {
-      const { data } = await api.post<{ token: string }>(
+      await api.post(
         isLogin ? "/auth/sign-in" : "/auth/register",
         values,
       );
-      if (!data.token) throw new Error("Missing authentication token");
-      sessionStorage.setItem("authToken", data.token);
       navigate("/rides", { replace: true });
     } catch (error: unknown) {
       const body = axios.isAxiosError<

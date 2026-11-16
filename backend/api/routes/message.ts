@@ -1,5 +1,5 @@
 import { Router, type Request, type Response } from "express";
-import requireAuth from "../../middleware/authentication";
+import requireAuth from "../../middleware/requireAuth";
 import validateBody from "../../middleware/validation";
 import { messageSchema, type messageSchemaType } from "../../schema";
 import { db } from "../../src/prisma/db";

@@ -1,7 +1,7 @@
 import { Router, type Request, type Response } from "express";
 import { inputRideSchema, type rideInputType } from "../../schema";
 import { db } from "../../src/prisma/db";
-import requireAuth from "../../middleware/authentication";
+import requireAuth from "../../middleware/requireAuth";
 import validateBody from "../../middleware/validation";
 import { pusher } from "../../utils";
 import { or } from "@prisma/orm-postgres/orm-client";

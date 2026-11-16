@@ -1,8 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
 import { jwtVerify } from "jose";
-import { getAuthCookie } from "../auth-cookie";
+import { getAuthCookie } from "../utils";
 
-export default async function authentication(
+export default async function requireAuth(
   req: Request,
   res: Response,
   next: NextFunction,

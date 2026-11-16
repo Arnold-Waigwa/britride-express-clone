@@ -1,12 +1,12 @@
 import { Router, type Request, type Response } from "express";
-import authentication from "../../middleware/authentication";
+import requireAuth from "../../middleware/requireAuth";
 import { db } from "../../src/prisma/db";
 
 const router = Router();
 
 router.get(
   "/",
-  authentication,
+  requireAuth,
   async (_req: Request, res: Response<unknown, { user: { id: number } }>) => {
     try {
       const user = await db.orm.public.User.first({ id: res.locals.user.id });

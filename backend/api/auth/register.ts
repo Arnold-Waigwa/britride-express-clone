@@ -2,8 +2,7 @@ import { Router, type Request, type Response } from "express";
 import { registerUserSchema, type userRegisterType } from "../../schema";
 import validateBody from "../../middleware/validation";
 import { db } from "../../src/prisma/db";
-import { generateJWT } from "../../utils";
-import { setAuthCookie } from "../../auth-cookie";
+import { generateJWT, setAuthCookie } from "../../utils";
 
 const router = Router();
 

@@ -1,7 +1,6 @@
 import { Router, type Request, type Response } from "express";
 import passport from "passport";
-import { generateJWT } from "../../utils";
-import { setAuthCookie } from "../../auth-cookie";
+import { generateJWT, setAuthCookie } from "../../utils";
 const router = Router();
 
 router.get(
