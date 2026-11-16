@@ -3,6 +3,7 @@ import { signInUserSchema, type userSignInType } from "../../schema";
 import validateBody from "../../middleware/validation";
 import { db } from "../../src/prisma/db";
 import { generateJWT } from "../../utils";
+import { setAuthCookie } from "../../auth-cookie";
 
 const router = Router();
 
@@ -19,13 +20,13 @@ router.post(
     try {
       const user = await db.orm.public.User.first({ email });
 
-      if (!user) {
+      if (!user?.passwordHash) {
         return res.status(401).json({ error: "Invalid email or password" });
       }
 
       const isPasswordValid = await Bun.password.verify(
         password,
-        user.passwordHash!,
+        user.passwordHash,
       );
 
       if (!isPasswordValid) {
@@ -40,7 +41,8 @@ router.post(
         email,
       });
 
-      res.send({ token });
+      setAuthCookie(res, token);
+      res.json({ message: "Signed in successfully" });
     } catch (error) {
       console.log("Error logging in user", error);
       res.status(500).send({ error: "Internal server error" });

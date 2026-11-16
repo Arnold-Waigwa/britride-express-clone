@@ -3,6 +3,7 @@ import { registerUserSchema, type userRegisterType } from "../../schema";
 import validateBody from "../../middleware/validation";
 import { db } from "../../src/prisma/db";
 import { generateJWT } from "../../utils";
+import { setAuthCookie } from "../../auth-cookie";
 
 const router = Router();
 
@@ -40,7 +41,8 @@ router.post(
         id: user.id,
       });
 
-      res.status(201).send({ token });
+      setAuthCookie(res, token);
+      res.status(201).json({ message: "Account created successfully" });
     } catch (error) {
       console.log("Error occurred creating user", error);
       res.status(500).send({ error: "Internal server error" });

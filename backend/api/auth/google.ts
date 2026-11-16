@@ -1,6 +1,7 @@
 import { Router, type Request, type Response } from "express";
 import passport from "passport";
 import { generateJWT } from "../../utils";
+import { setAuthCookie } from "../../auth-cookie";
 const router = Router();
 
 router.get(
@@ -27,7 +28,8 @@ router.get(
       lastName: user.last_name,
     });
 
-    res.send({ token });
+    setAuthCookie(res, token);
+    res.redirect("/rides");
   },
 );
 

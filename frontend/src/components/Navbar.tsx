@@ -12,6 +12,10 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import { Link } from "react-router-dom";
+import { Bell, Sun } from "lucide-react";
+// @ts-expect-error Keep Moon imported for the future theme toggle.
+import { Moon } from "lucide-react"; // eslint-disable-line @typescript-eslint/no-unused-vars
+import { Button } from "./ui/button";
 
 const Navbar = () => {
   const paths: { label: string; url: string }[] = [
@@ -40,8 +44,12 @@ const Navbar = () => {
         </NavigationMenuList>
       </NavigationMenu>
       <div className="flex flex-1 items-center justify-end gap-8">
-        <div>light mode</div>
-        <div>notification</div>
+        <Button type="button" variant="ghost" size="icon" aria-label="Light mode">
+          <Sun aria-hidden="true" />
+        </Button>
+        <Button type="button" variant="ghost" size="icon" aria-label="Notifications">
+          <Bell aria-hidden="true" />
+        </Button>
         <div>
           <DropdownMenu>
             <DropdownMenuTrigger>Account</DropdownMenuTrigger>

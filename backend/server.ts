@@ -8,10 +8,14 @@ import passport from "passport";
 import { initializePassport } from "./utils";
 import googleSignInRouter from "./api/auth/google";
 import pusherRouter from "./api/auth/pusher";
+import meRouter from "./api/auth/me";
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: Bun.env.FRONTEND_ORIGIN || "http://localhost:5173",
+  credentials: true,
+}));
 app.use(express.urlencoded({ extended: false }));
 
 if (!Bun.env.JWT_SECRET) {
@@ -29,5 +33,6 @@ app.use("/api/auth/register", registerRouter);
 app.use("/api/auth/sign-in", signInRouter);
 app.use("/api/auth/google", googleSignInRouter);
 app.use("/api/auth/pusher", pusherRouter);
+app.use("/api/auth/me", meRouter);
 
 app.listen(3000, () => console.log("listening on port 3000"));

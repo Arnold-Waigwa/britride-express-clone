@@ -1,18 +1,19 @@
 import type { Request, Response, NextFunction } from "express";
 import { jwtVerify } from "jose";
+import { getAuthCookie } from "../auth-cookie";
 
 export default async function authentication(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
-  const header = req.get("authorization");
+  res.setHeader("Cache-Control", "no-store");
+  const token = getAuthCookie(req);
 
-  if (!header?.startsWith("Bearer ")) {
-    return res.status(401).json({ error: "Missing token" });
+  if (!token) {
+    return res.status(401).json({ error: "Authentication required" });
   }
 
-  const token = header.slice(7);
   const secret = new TextEncoder().encode(Bun.env.JWT_SECRET);
 
   try {
@@ -20,6 +21,10 @@ export default async function authentication(
       algorithms: ["HS256"],
       requiredClaims: ["exp"],
     });
+
+    if (!Number.isSafeInteger(payload.id) || (payload.id as number) <= 0) {
+      return res.status(401).json({ error: "Invalid or expired token" });
+    }
 
     res.locals.user = { id: payload.id };
   } catch {
