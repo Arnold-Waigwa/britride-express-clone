@@ -28,7 +28,8 @@ router.get(
     });
 
     setAuthCookie(res, token);
-    res.redirect("/rides");
+    const frontendOrigin = Bun.env.FRONTEND_ORIGIN || "http://localhost:5173";
+    res.redirect(new URL("/rides", frontendOrigin).toString());
   },
 );
 

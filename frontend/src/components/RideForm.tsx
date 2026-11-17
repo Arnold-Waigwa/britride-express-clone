@@ -14,6 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { api } from "@/lib/api";
 import { Alert, AlertTitle } from "./ui/alert";
+import { useNavigate } from "react-router-dom";
 
 const rideSchema = z.object({
   title: z.string().trim().min(1, "Enter a title").max(50),
@@ -33,6 +34,7 @@ const rideSchema = z.object({
 type Form = z.infer<typeof rideSchema>;
 
 const CreateRideForm = () => {
+  const navigate = useNavigate();
   const {
     register,
     setError,
@@ -48,7 +50,7 @@ const CreateRideForm = () => {
     clearErrors("root");
     try {
       await api.post("/rides", data);
-      reset();
+      navigate("/rides", { replace: true });
     } catch (error: unknown) {
       const body = axios.isAxiosError<{
         error?: string;
