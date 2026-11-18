@@ -15,6 +15,7 @@ import {
 import { requireAuth } from "./loaders/authLoader.ts";
 import ProtectedLayout from "./components/ProtectedLayout.tsx";
 import RouteError from "./components/RouteError.tsx";
+import ThemeProvider from "./components/ThemeProvider.tsx";
 
 const router = createBrowserRouter([
   { path: "/register", element: <Register /> },
@@ -37,6 +38,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <ThemeProvider>
+      <RouterProvider router={router} />
+    </ThemeProvider>
   </StrictMode>,
 );

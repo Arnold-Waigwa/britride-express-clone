@@ -49,10 +49,7 @@ const AuthForm = ({ type }: { type: "login" | "register" }) => {
   const onSubmit = async (values: Form) => {
     clearErrors("root");
     try {
-      await api.post(
-        isLogin ? "/auth/sign-in" : "/auth/register",
-        values,
-      );
+      await api.post(isLogin ? "/auth/sign-in" : "/auth/register", values);
       navigate("/rides", { replace: true });
     } catch (error: unknown) {
       const body = axios.isAxiosError<
@@ -152,7 +149,6 @@ const AuthForm = ({ type }: { type: "login" | "register" }) => {
               <label htmlFor="email" className="font-medium">
                 Email
               </label>
-              k
               <input
                 placeholder="janedoe@albion.edu"
                 id="email"

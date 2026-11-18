@@ -1,5 +1,13 @@
-import { CalendarDays, MapPin, Loader2, AlertCircle } from "lucide-react";
+import { api } from "@/lib/api";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { AlertCircle, CalendarDays, Loader2, MapPin } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { z } from "zod";
 import CarFront from "./CarFront";
+import { Alert, AlertTitle } from "./ui/alert";
+import { Button } from "./ui/button";
 import {
   Card,
   CardContent,
@@ -7,14 +15,6 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { Button } from "./ui/button";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
-import { api } from "@/lib/api";
-import { Alert, AlertTitle } from "./ui/alert";
-import { useNavigate } from "react-router-dom";
 
 const rideSchema = z.object({
   title: z.string().trim().min(1, "Enter a title").max(50),

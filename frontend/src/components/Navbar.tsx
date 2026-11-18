@@ -12,12 +12,19 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import { Link } from "react-router-dom";
-import { Bell, Sun } from "lucide-react";
-// @ts-expect-error Keep Moon imported for the future theme toggle.
-import { Moon } from "lucide-react"; // eslint-disable-line @typescript-eslint/no-unused-vars
+import { Bell, Moon, Sun } from "lucide-react";
 import { Button } from "./ui/button";
+import { useContext } from "react";
+import { ThemeContext } from "./ThemeProvider";
 
 const Navbar = () => {
+  const themeContext = useContext(ThemeContext);
+
+  if (!themeContext) {
+    throw new Error("Navbar must be used inside ThemeProvider");
+  }
+
+  const { theme, changeTheme } = themeContext;
   const paths: { label: string; url: string }[] = [
     { label: "Rides", url: "/rides" },
     { label: "Create New Ride", url: "/create-ride" },
@@ -44,10 +51,25 @@ const Navbar = () => {
         </NavigationMenuList>
       </NavigationMenu>
       <div className="flex flex-1 items-center justify-end gap-8">
-        <Button type="button" variant="ghost" size="icon" aria-label="Light mode">
-          <Sun aria-hidden="true" />
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          aria-label={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
+          onClick={changeTheme}
+        >
+          {theme === "light" ? (
+            <Moon aria-hidden="true" />
+          ) : (
+            <Sun aria-hidden="true" />
+          )}
         </Button>
-        <Button type="button" variant="ghost" size="icon" aria-label="Notifications">
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          aria-label="Notifications"
+        >
           <Bell aria-hidden="true" />
         </Button>
         <div>
