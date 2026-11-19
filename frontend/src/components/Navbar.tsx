@@ -11,7 +11,7 @@ import {
   NavigationMenuItem,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { Bell, Moon, Sun } from "lucide-react";
 import { Button } from "./ui/button";
 import { useContext } from "react";
@@ -40,12 +40,16 @@ const Navbar = () => {
         <NavigationMenuList>
           {paths.map((path) => (
             <NavigationMenuItem key={path.url}>
-              <Link
+              <NavLink
                 to={path.url}
-                className="flex items-center gap-1.5 rounded-md p-2 text-sm transition-all outline-none hover:bg-muted focus:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                className={({ isActive }) =>
+                  `flex items-center gap-1.5 rounded-md p-2 text-sm transition-all outline-none hover:bg-muted focus:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none ${
+                    isActive ? "bg-muted text-foreground" : "text-muted-foreground"
+                  }`
+                }
               >
                 {path.label}
-              </Link>
+              </NavLink>
             </NavigationMenuItem>
           ))}
         </NavigationMenuList>

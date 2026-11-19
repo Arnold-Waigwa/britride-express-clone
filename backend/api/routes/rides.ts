@@ -13,10 +13,14 @@ interface RideBodyLocals {
   validatedBody: rideInputType;
 }
 
-router.get("/", async (_req, res) => {
+router.get("/", async (req, res) => {
   try {
-    const rides = await db.orm.public.Ride.all();
-    res.json(rides);
+    const limit = Math.min(Math.max(Number(req.query.limit) || 10, 1), 50);
+    const offset = Math.max(Number(req.query.offset) || 0, 0);
+    const allRides = await db.orm.public.Ride.all();
+    const rides = allRides.slice(offset, offset + limit);
+
+    res.json({ rides, total: allRides.length, limit, offset });
   } catch (error) {
     console.error("Error getting rides:", error);
     res.status(500).json({ error: "Unable to fetch rides" });

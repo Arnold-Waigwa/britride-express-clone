@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import RideCard from "./components/RideCard";
+import RidePagination from "./components/RidePagination";
 type Ride = {
   id: number;
   title: string;
@@ -11,16 +12,22 @@ type Ride = {
 
 const App = () => {
   const [rides, setRides] = useState<Ride[]>([]);
-
-  const fetchRides = async () => {
-    const response = await fetch("/api/rides");
-    const data = await response.json();
-    setRides(data);
-  };
+  const [total, setTotal] = useState(0);
+  const [offset, setOffset] = useState(0);
+  const limit = 5;
 
   useEffect(() => {
+    const fetchRides = async () => {
+      const response = await fetch(
+        `/api/rides?limit=${limit}&offset=${offset}`,
+      );
+      const data = await response.json();
+      setRides(data.rides);
+      setTotal(data.total);
+    };
+
     fetchRides();
-  }, []);
+  }, [offset]);
   return (
     <main className="max-w-6xl mx-auto">
       <Navbar />
@@ -35,6 +42,7 @@ const App = () => {
           />
         ))}
       </div>
+      <RidePagination total={total} limit={limit} onOffsetChange={setOffset} />
     </main>
   );
 };
